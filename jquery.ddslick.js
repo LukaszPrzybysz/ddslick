@@ -79,6 +79,7 @@
             if (!data) {
 
                 var ddSelect = [], ddJson = options.data;
+                options.data = [];
 
                 //Get data from HTML select options
                 obj.find('option').each(function () {
@@ -98,7 +99,7 @@
                 else options.data = $.merge(ddSelect, options.data);
 
                 //Replace HTML select with empty placeholder, keep the original
-                var original = obj, placeholder = $('<div').attr('id', obj.attr('id') + '-dd-placeholder');
+                var original = obj, placeholder = $('<div>').attr('id', obj.attr('id') + '-dd-placeholder');
                 obj.replaceWith(placeholder);
                 obj = placeholder;
 
@@ -114,6 +115,8 @@
                 var ddSelect = obj.find('.dd-select'),
                     ddOptions = obj.find('.dd-options');
 
+                ddSelect.find('input').attr('name', original.attr('name'));
+                
                 //Set widths
                 ddOptions.css({ width: options.width });
                 ddSelect.css({ width: options.width, background: options.background });
