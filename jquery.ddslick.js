@@ -18,67 +18,68 @@
 
     var methods = {},
 
-    //Set defauls for the control
-    defaults = {
-        data: [],
-        keepJSONItemsOnTop: false,
-        width: 260,
-        height: null,
-        background: "#eee",
-        selectText: "",
-        defaultSelectedIndex: null,
-        truncateDescription: true,
-        imagePosition: "left",
-        showSelectedHTML: true,
-        clickOffToClose: true,
-		embedCSS: true,
-        onSelected: function () { }
-    },
+        //Set defauls for the control
+        defaults = {
+            data: [],
+            keepJSONItemsOnTop: false,
+            width: 260,
+            height: null,
+            background: '#eee',
+            selectText: '',
+            defaultSelectedIndex: null,
+            truncateDescription: true,
+            imagePosition: 'left',
+            showSelectedHTML: true,
+            clickOffToClose: true,
+            embedCSS: true,
+            onSelected: function () { }
+        },
 
-    ddSelectHtml = '<div class="dd-select"><input class="dd-selected-value" type="hidden" /><a class="dd-selected"></a><span class="dd-pointer dd-pointer-down"></span></div>',
-    ddOptionsHtml = '<ul class="dd-options"></ul>',
+        ddSelectHtml = '<div class="dd-select"><input class="dd-selected-value" type="hidden" /><a class="dd-selected"></a><span class="dd-pointer dd-pointer-down"></span></div>',
+        ddOptionsHtml = '<ul class="dd-options"></ul>',
 
-    //CSS for ddSlick
-    ddslickCSS = '<style id="css-ddslick" type="text/css">' +
-                '.dd-select{ border-radius:2px; border:solid 1px #ccc; position:relative; cursor:pointer;}' +
-                '.dd-desc { color:#aaa; display:block; overflow: hidden; font-weight:normal; line-height: 1.4em; }' +
-                '.dd-selected{ overflow:hidden; display:block; padding:10px; font-weight:bold;}' +
-                '.dd-pointer{ width:0; height:0; position:absolute; right:10px; top:50%; margin-top:-3px;}' +
-                '.dd-pointer-down{ border:solid 5px transparent; border-top:solid 5px #000; }' +
-                '.dd-pointer-up{border:solid 5px transparent !important; border-bottom:solid 5px #000 !important; margin-top:-8px;}' +
-                '.dd-options{ border:solid 1px #ccc; border-top:none; list-style:none; box-shadow:0px 1px 5px #ddd; display:none; position:absolute; z-index:2000; margin:0; padding:0;background:#fff; overflow:auto;}' +
-                '.dd-option{ padding:10px; display:block; border-bottom:solid 1px #ddd; overflow:hidden; text-decoration:none; color:#333; cursor:pointer;-webkit-transition: all 0.25s ease-in-out; -moz-transition: all 0.25s ease-in-out;-o-transition: all 0.25s ease-in-out;-ms-transition: all 0.25s ease-in-out; }' +
-                '.dd-options > li:last-child > .dd-option{ border-bottom:none;}' +
-                '.dd-option:hover{ background:#f3f3f3; color:#000;}' +
-                '.dd-selected-description-truncated { text-overflow: ellipsis; white-space:nowrap; }' +
-                '.dd-option-selected { background:#f6f6f6; }' +
-                '.dd-option-image, .dd-selected-image { vertical-align:middle; float:left; margin-right:5px; max-width:64px;}' +
-                '.dd-image-right { float:right; margin-right:15px; margin-left:5px;}' +
-                '.dd-container{ position:relative;}​ .dd-selected-text { font-weight:bold}​</style>';
+        //CSS for ddSlick
+        ddslickCSS = '<style id="css-ddslick" type="text/css">' +
+            '.dd-select{ border-radius:2px; border:solid 1px #ccc; position:relative; cursor:pointer;}' +
+            '.dd-desc { color:#aaa; display:block; overflow: hidden; font-weight:normal; line-height: 1.4em; }' +
+            '.dd-selected{ overflow:hidden; display:block; padding:10px; font-weight:bold;}' +
+            '.dd-pointer{ width:0; height:0; position:absolute; right:10px; top:50%; margin-top:-3px;}' +
+            '.dd-pointer-down{ border:solid 5px transparent; border-top:solid 5px #000; }' +
+            '.dd-pointer-up{border:solid 5px transparent !important; border-bottom:solid 5px #000 !important; margin-top:-8px;}' +
+            '.dd-options{ border:solid 1px #ccc; border-top:none; list-style:none; box-shadow:0px 1px 5px #ddd; display:none; position:absolute; z-index:2000; margin:0; padding:0;background:#fff; overflow:auto;}' +
+            '.dd-option{ padding:10px; display:block; border-bottom:solid 1px #ddd; overflow:hidden; text-decoration:none; color:#333; cursor:pointer;-webkit-transition: all 0.25s ease-in-out; -moz-transition: all 0.25s ease-in-out;-o-transition: all 0.25s ease-in-out;-ms-transition: all 0.25s ease-in-out; }' +
+            '.dd-options > li:last-child > .dd-option{ border-bottom:none;}' +
+            '.dd-option:hover{ background:#f3f3f3; color:#000;}' +
+            '.dd-selected-description-truncated { text-overflow: ellipsis; white-space:nowrap; }' +
+            '.dd-option-selected { background:#f6f6f6; }' +
+            '.dd-option-image, .dd-selected-image { vertical-align:middle; float:left; margin-right:5px; max-width:64px;}' +
+            '.dd-image-right { float:right; margin-right:15px; margin-left:5px;}' +
+            '.dd-container{ position:relative;}​ .dd-selected-text { font-weight:bold}​</style>';
 
     //Public methods 
     methods.init = function (userOptions) {
         //Preserve the original defaults by passing an empty object as the target
         //The object is used to get global flags like embedCSS.
         var options = $.extend({}, defaults, userOptions);
-        
+
         //CSS styles are only added once.
-	    if ($('#css-ddslick').length <= 0 && options.embedCSS) {
-	        $(ddslickCSS).appendTo('head');
-	    }
+        if ($('#css-ddslick').length <= 0 && options.embedCSS) {
+            $(ddslickCSS).appendTo('head');
+        }
 
         //Apply on all selected elements
         return this.each(function () {
             //Preserve the original defaults by passing an empty object as the target 
             //The object is used to save drop-down's corresponding settings and data.
             var options = $.extend({}, defaults, userOptions);
-            
+
             var obj = $(this),
                 data = obj.data('ddslick');
             //If the plugin has not been initialized yet
             if (!data) {
 
-                var ddSelect = [], ddJson = options.data;
+                var ddSelect = [];
+                var ddJson = options.data;
                 options.data = [];
 
                 //Get data from HTML select options
@@ -107,16 +108,16 @@
                 obj.addClass('dd-container').append(ddSelectHtml).append(ddOptionsHtml);
 
                 // Inherit name attribute from original element
-                obj.find("input.dd-selected-value")
-                    .attr("id", $(original).attr("id"))
-                    .attr("name", $(original).attr("name"));
+                obj.find('input.dd-selected-value')
+                    .attr('id', $(original).attr('id'))
+                    .attr('name', $(original).attr('name'));
 
                 //Get newly created ddOptions and ddSelect to manipulate
-                var ddSelect = obj.find('.dd-select'),
-                    ddOptions = obj.find('.dd-options');
+                ddSelect = obj.find('.dd-select');
+                var ddOptions = obj.find('.dd-options');
 
                 ddSelect.find('input').attr('name', original.attr('name'));
-                
+
                 //Set widths
                 ddOptions.css({ width: options.width });
                 ddSelect.css({ width: options.width, background: options.background });
@@ -131,12 +132,12 @@
                     if (item.selected) options.defaultSelectedIndex = index;
                     ddOptions.append('<li>' +
                         '<a class="dd-option">' +
-                            (item.value ? ' <input class="dd-option-value" type="hidden" value="' + item.value + '" />' : '') +
-                            (item.imageSrc ? ' <img class="dd-option-image' + (options.imagePosition == "right" ? ' dd-image-right' : '') + '" src="' + item.imageSrc + '" />' : '') +
-                            (item.text ? ' <label class="dd-option-text">' + item.text + '</label>' : '') +
-                            (item.description ? ' <small class="dd-option-description dd-desc">' + item.description + '</small>' : '') +
+                        (item.value ? ' <input class="dd-option-value" type="hidden" value="' + item.value + '" />' : '') +
+                        (item.imageSrc ? ' <img class="dd-option-image' + (options.imagePosition == 'right' ? ' dd-image-right' : '') + '" src="' + item.imageSrc + '" />' : '') +
+                        (item.text ? ' <label class="dd-option-text">' + item.text + '</label>' : '') +
+                        (item.description ? ' <small class="dd-option-description dd-desc">' + item.description + '</small>' : '') +
                         '</a>' +
-                    '</li>');
+                        '</li>');
                 });
 
                 //Save plugin data.
@@ -155,8 +156,8 @@
                 }
                 else {
                     var index = (options.defaultSelectedIndex != null && options.defaultSelectedIndex >= 0 && options.defaultSelectedIndex < options.data.length)
-                                ? options.defaultSelectedIndex
-                                : 0;
+                        ? options.defaultSelectedIndex
+                        : 0;
                     selectIndex(obj, index);
                 }
 
@@ -176,7 +177,7 @@
                     ddOptions.addClass('dd-click-off-close');
                     obj.on('click.ddslick', function (e) { e.stopPropagation(); });
                     $('body').on('click', function () {
-                    $('.dd-open').removeClass('dd-open');
+                        $('.dd-open').removeClass('dd-open');
                         $('.dd-click-off-close').slideUp(50).siblings('.dd-select').find('.dd-pointer').removeClass('dd-pointer-up');
                     });
                 }
@@ -187,7 +188,7 @@
     //Public method to select an option by its index
     methods.select = function (options) {
         return this.each(function () {
-            if (options.index!==undefined)
+            if (options.index !== undefined)
                 selectIndex($(this), options.index);
             if (options.id)
                 selectId($(this), options.id);
@@ -231,13 +232,13 @@
             }
         });
     }
-    
-     //Private: Select id
+
+    //Private: Select id
     function selectId(obj, id) {
-    
-       var index = obj.find(".dd-option-value[value= '" + id + "']").parents("li").prevAll().length;
-       selectIndex(obj, index);
-       
+
+        var index = obj.find(".dd-option-value[value= '" + id + "']").parents('li').prevAll().length;
+        selectIndex(obj, index);
+
     }
 
     //Private: Select index
@@ -268,13 +269,13 @@
         //If set to display to full html, add html
         if (settings.showSelectedHTML) {
             ddSelected.html(
-                    (selectedData.imageSrc ? '<img class="dd-selected-image' + (settings.imagePosition == "right" ? ' dd-image-right' : '') + '" src="' + selectedData.imageSrc + '" />' : '') +
-                    (selectedData.text ? '<label class="dd-selected-text">' + selectedData.text + '</label>' : '') +
-                    (selectedData.description ? '<small class="dd-selected-description dd-desc' + (settings.truncateDescription ? ' dd-selected-description-truncated' : '') + '" >' + selectedData.description + '</small>' : '')
-                );
+                (selectedData.imageSrc ? '<img class="dd-selected-image' + (settings.imagePosition === 'right' ? ' dd-image-right' : '') + '" src="' + selectedData.imageSrc + '" />' : '') +
+                (selectedData.text ? '<label class="dd-selected-text">' + selectedData.text + '</label>' : '') +
+                (selectedData.description ? '<small class="dd-selected-description dd-desc' + (settings.truncateDescription ? ' dd-selected-description-truncated' : '') + '" >' + selectedData.description + '</small>' : '')
+            );
 
         }
-            //Else only display text as selection
+        //Else only display text as selection
         else ddSelected.html(selectedData.text);
 
         //Updating selected option value
