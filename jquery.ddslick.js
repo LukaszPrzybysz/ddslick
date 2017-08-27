@@ -233,6 +233,24 @@
         });
     }
 
+    //Public method to disable dropdown
+    methods.disable = function () {
+        return this.each(function () {
+            var $this = $(this);
+
+            $this.addClass('dd-disabled');
+        });
+    };
+
+    //Public method to enable a disabled dropdown
+    methods.enable = function () {
+        return this.each(function () {
+            var $this = $(this);
+            if ($this.hasClass('dd-disabled'))
+                $this.removeClass('dd-disabled');
+        });
+    };
+
     //Private: Select id
     function selectId(obj, id) {
 
@@ -299,30 +317,30 @@
 
     //Private: Close the drop down options
     function open(obj) {
+        if (!obj.hasClass('dd-disabled')) {
+            var $this = obj.find('.dd-select'),
+                ddOptions = $this.siblings('.dd-options'),
+                ddPointer = $this.find('.dd-pointer'),
+                wasOpen = ddOptions.is(':visible');
 
-        var $this = obj.find('.dd-select'),
-            ddOptions = $this.siblings('.dd-options'),
-            ddPointer = $this.find('.dd-pointer'),
-            wasOpen = ddOptions.is(':visible');
-
-        //Close all open options (multiple plugins) on the page
-        $('.dd-click-off-close').not(ddOptions).slideUp(50);
-        $('.dd-pointer').removeClass('dd-pointer-up');
-        $this.removeClass('dd-open');
-
-        if (wasOpen) {
-            ddOptions.slideUp('fast');
-            ddPointer.removeClass('dd-pointer-up');
+            //Close all open options (multiple plugins) on the page
+            $('.dd-click-off-close').not(ddOptions).slideUp(50);
+            $('.dd-pointer').removeClass('dd-pointer-up');
             $this.removeClass('dd-open');
-        }
-        else {
-            $this.addClass('dd-open');
-            ddOptions.slideDown('fast');
-            ddPointer.addClass('dd-pointer-up');
-        }
 
-        //Fix text height (i.e. display title in center), if there is no description
-        adjustOptionsHeight(obj);
+            if (wasOpen) {
+                ddOptions.slideUp('fast');
+                ddPointer.removeClass('dd-pointer-up');
+                $this.removeClass('dd-open');
+            } else {
+                $this.addClass('dd-open');
+                ddOptions.slideDown('fast');
+                ddPointer.addClass('dd-pointer-up');
+            }
+
+            //Fix text height (i.e. display title in center), if there is no description
+            adjustOptionsHeight(obj);
+        }
     }
 
     //Private: Close the drop down options
