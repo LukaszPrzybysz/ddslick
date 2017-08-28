@@ -54,6 +54,8 @@
             '.dd-option-selected { background:#f6f6f6; }' +
             '.dd-option-image, .dd-selected-image { vertical-align:middle; float:left; margin-right:5px; max-width:64px;}' +
             '.dd-image-right { float:right; margin-right:15px; margin-left:5px;}' +
+            '.dd-disabled {opacity: .4;}' +
+            '.dd-disabled * {cursor: default !important;}' +
             '.dd-container{ position:relative;}​ .dd-selected-text { font-weight:bold}​</style>';
 
     //Public methods 
@@ -344,5 +346,5 @@
         obj.find('.dd-options').slideUp(50);
         obj.find('.dd-pointer').removeClass('dd-pointer-up').removeClass('dd-pointer-up');
     }
-
+    
 })(jQuery);
